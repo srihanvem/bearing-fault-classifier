@@ -1,33 +1,98 @@
 # Bearing Fault Classifier
 
-A machine learning project that detects and classifies bearing faults using vibration-based features.
+A machine learning project that detects and classifies ball bearing faults using vibration-derived statistical features.
 
-## Project Goal
+## Project Overview
 
-The goal of this project is to use vibration data to identify whether a bearing is healthy or faulty, then classify the type of fault. This project connects mechanical systems, signal-based diagnostics, and machine learning.
+Ball bearings are used in many rotating machines, including motors, turbines, vehicles, and industrial equipment. When a bearing begins to fail, vibration patterns can reveal the problem before full failure occurs.
 
-## Why This Project Matters
+This project uses statistical features extracted from vibration signals to classify bearing condition into four categories:
 
-Bearings are used in motors, turbines, vehicles, manufacturing equipment, and many other mechanical systems. When a bearing begins to fail, it can create vibration patterns that reveal the problem before complete failure occurs. Detecting those patterns early can help reduce downtime, improve safety, and support predictive maintenance.
+- Ball fault
+- Inner race fault
+- Outer race fault
+- Normal bearing
 
-## Tools Used
+## Dataset
 
-- Python
-- pandas
-- scikit-learn
-- matplotlib
-- Jupyter Notebook
+This project uses the Case Western Reserve University bearing dataset, accessed through Kaggle.
+
+Dataset: https://www.kaggle.com/datasets/shayanfazeli/cwru
+
+The dataset contains vibration signal features computed over 2048-point windows from a bearing test rig. Features include mean, standard deviation, RMS, skewness, kurtosis, crest factor, form factor, minimum, and maximum.
+
+The dataset file is not included in this repository. To run the project, download the CSV file and place it in the `data/` folder as:
+
+```text
+data/feature_time_48k_2048_load_1.csv
+```
+
+## Method
+
+The model uses a manually implemented k-Nearest Neighbors classifier. The workflow includes:
+
+- Simplifying detailed fault labels into four main classes
+- Standardizing the feature values
+- Splitting the dataset into training and testing sets
+- Predicting fault type using KNN
+- Evaluating performance with precision, recall, F1-score, accuracy, and a confusion matrix
+
+## Results
+
+The KNN model achieved:
+
+```text
+Overall Accuracy: 94.57%
+```
+
+Class-level performance:
+
+```text
+Class      Precision    Recall       F1-score
+ball       0.91         0.89         0.90
+inner      0.99         1.00         0.99
+outer      0.92         0.92         0.92
+normal     0.98         0.98         0.98
+```
+
+The model performed especially well on inner race faults and normal bearing samples. Most errors occurred between ball faults and outer race faults, which suggests that some vibration patterns between those fault types are more similar.
 
 ## Project Structure
 
 ```text
-src/        Source code
-data/       Dataset files
-notebooks/  Exploration and analysis notebooks
-outputs/    Model outputs
-figures/    Charts and visuals
+src/
+  data_utils.py      Data loading, label cleaning, and preprocessing
+  knn_model.py       Manual KNN classifier
+  evaluation.py      Metrics and confusion matrix plotting
+
+data/                Local dataset folder, not uploaded to GitHub
+figures/             Generated plots
+outputs/             Model outputs
+main.py              Main script
+requirements.txt     Python dependencies
 ```
 
-## Current Status
+## How to Run
 
-This project is currently being organized and cleaned for my GitHub portfolio. The next steps are to add the model code, document the workflow, and include final results/visuals.
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the classifier:
+
+```bash
+python main.py
+```
+
+## Tools Used
+
+- Python
+- NumPy
+- pandas
+- matplotlib
+
+## Future Improvements
+
+Future versions could compare KNN against logistic regression, Naive Bayes, random forests, or neural networks. The project could also include feature importance analysis and testing across different bearing loads and fault sizes.
